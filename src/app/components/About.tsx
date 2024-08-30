@@ -17,21 +17,21 @@ export default function About() {
     }, []);
   
     return (
-      <section id="about" className="py-24 bg-gray-100">
+      <section id="about" className="py-24 bg-black">
         <div className="container mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-12">About Our Technology</h2>
+          <h2 className="text-4xl text-white font-bold mb-12">About Our Technology</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="about-item p-8 bg-white shadow-lg rounded-lg">
+            <div className="about-item p-8 bg-black shadow-white text-white shadow-md rounded-lg">
               <Image src={powered} alt="AI-Powered" className="mb-4 mx-auto" />
               <h3 className="text-2xl font-semibold mb-2">AI-Powered</h3>
               <p>Advanced AI algorithms ensure precise virtual dress trials.</p>
             </div>
-            <div className="about-item p-8 bg-white shadow-lg rounded-lg">
+            <div className="about-item p-8 bg-black shadow-white text-white shadow-md rounded-lg">
               <Image src={enhance} alt="Image Enhancement" className="mb-4 mx-auto" />
               <h3 className="text-2xl font-semibold mb-2">Image Enhancement</h3>
               <p>Enhance old images to see them in high resolution with modern outfits.</p>
             </div>
-            <div className="about-item p-8 bg-white shadow-lg rounded-lg">
+            <div className="about-item p-8 bg-black shadow-white text-white shadow-md rounded-lg">
               <Image src={detail} alt="Garment Details" className="mb-4 mx-auto" />
               <h3 className="text-2xl font-semibold mb-2">Garment Details</h3>
               <p>Extract detailed information about the garment you try on.</p>

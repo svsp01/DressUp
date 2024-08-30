@@ -71,3 +71,13 @@
 html {
   scroll-behavior: smooth;
 }
+
+.scroll::-webkit-scrollbar {
+  display: none; /* Hides the scrollbar */
+}
+
+/* For Firefox */
+.scroll {
+  -ms-overflow-style: none; /* Hides the scrollbar */
+  scrollbar-width: 1px; /* Hides the scrollbar */
+}

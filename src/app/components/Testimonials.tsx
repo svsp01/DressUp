@@ -47,11 +47,11 @@ export default function Testimonials() {
   }, [currentSlide]);
 
   return (
-    <section id="testimonials" className="py-24 bg-gray-50">
+    <section id="testimonials" className="py-24 bg-black text-white">
       <div className="container mx-auto text-center">
         <h2 className="text-4xl font-bold mb-12">What Our Users Say</h2>
         <div ref={testimonialsRef} className="relative w-full max-w-4xl mx-auto">
-          <div className="testimonial-item p-8 mb-8 bg-white shadow-lg rounded-lg relative">
+          <div className="testimonial-item p-8 mb-8 bg-black shadow-lg rounded-lg relative">
             <Quote className="absolute top-0 left-0 text-6xl text-indigo-200 opacity-50" />
             <p className="text-lg italic mb-4">
               "{testimonials[currentSlide].text}"
