@@ -30,7 +30,7 @@ function SideNav() {
   };
 
   return (
-    <aside className="w-64 border-r  bg-gray-950 text-gray-100 flex flex-col shadow-xl">
+    <aside className="min-w-64 border-r  bg-gray-950 text-gray-100 flex flex-col shadow-xl">
       <div className="flex  rounded-b-none items-center justify-start pl-8 gap-2 h-16 bg-gray-950 border-b shadow-xl">
         <Avatar>
           <AvatarImage
