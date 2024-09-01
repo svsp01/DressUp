@@ -1,8 +1,7 @@
-"use client";
+'use client';
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { Quote } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 export default function Testimonials() {
   const testimonialsRef = useRef<HTMLDivElement | null>(null);
@@ -47,8 +46,8 @@ export default function Testimonials() {
   }, [currentSlide]);
 
   return (
-    <section id="testimonials" className="py-24 bg-black text-white">
-      <div className="container mx-auto text-center">
+    <section id="testimonials" className="py-24 bg-black text-white w-full">
+      <div className="max-w-screen-xl mx-auto text-center px-4 sm:px-6 lg:px-8">
         <h2 className="text-4xl font-bold mb-12">What Our Users Say</h2>
         <div ref={testimonialsRef} className="relative w-full max-w-4xl mx-auto">
           <div className="testimonial-item p-8 mb-8 bg-black shadow-lg rounded-lg relative">

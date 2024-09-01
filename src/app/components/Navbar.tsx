@@ -11,59 +11,74 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="fixed top-0 w-full bg-black text-white shadow-lg z-50">
-      <div className="container mx-auto flex flex-wrap justify-between items-center py-4 px-4 md:px-6 lg:px-8">
-        <div className="font-bold text-lg md:text-xl">Dress Up</div>
-        <div className="hidden md:flex items-center space-x-4 lg:space-x-6">
-          <a href="#about" className="hover:text-gray-400 transition duration-300">
-            About
-          </a>
-          <a href="#features" className="hover:text-gray-400 transition duration-300">
-            Features
-          </a>
-          <a href="#testimonials" className="hover:text-gray-400 transition duration-300">
-            Testimonials
-          </a>
-          <Link href="/try-now">
-            <Button className="bg-slate-100 hover:bg-slate-200 text-black px-4 py-2 rounded-lg" size={"lg"}>
-              Try Now
-            </Button>
-          </Link>
-        </div>
-        <div className="md:hidden flex items-center">
-          {/* Mobile Menu Button */}
-          <button onClick={toggleMenu} aria-label="Toggle Menu">
-            <svg
-              className="w-6 h-6"
-              fill="none"
+    <nav className="bg-black border-gray-200 dark:bg-gray-900">
+      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+        <a href="#" className="flex items-center space-x-3 rtl:space-x-reverse">
+          <img src="https://flowbite.com/docs/images/logo.svg" className="h-8" alt="Flowbite Logo" />
+          <span className="self-center text-2xl font-semibold whitespace-nowrap text-white">Dress Up</span>
+        </a>
+        <button
+          data-collapse-toggle="navbar-default"
+          type="button"
+          className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden  focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+          aria-controls="navbar-default"
+          aria-expanded="false"
+          onClick={toggleMenu}
+        >
+          <span className="sr-only">Open main menu</span>
+          <svg
+            className="w-5 h-5"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 17 14"
+          >
+            <path
               stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7" />
-            </svg>
-          </button>
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M1 1h15M1 7h15M1 13h15"
+            />
+          </svg>
+        </button>
+        <div className={`w-full md:block md:w-auto ${isMenuOpen ? "block" : "hidden"}`} id="navbar-default">
+          <ul className="font-medium flex flex-col md:flex-row p-4 md:p-0 mt-4 md:mt-0 rounded-lg  md:bg-transparent dark:bg-gray-800 md:dark:bg-gray-900  space-y-2 md:space-y-0 md:space-x-8">
+            <li>
+              <a
+                href="#about"
+                className="block py-2 px-3 text-white  dark:hover:bg-gray-700 rounded md:bg-transparent md:hover:text-blue-700 dark:text-white dark:md:hover:text-blue-500"
+                aria-current="page"
+              >
+                About
+              </a>
+            </li>
+            <li>
+              <a
+                href="#features"
+                className="block py-2 px-3 text-white  dark:hover:bg-gray-700 rounded md:bg-transparent md:hover:text-blue-700 dark:text-white dark:md:hover:text-blue-500"
+              >
+                Features
+              </a>
+            </li>
+            <li>
+              <a
+                href="#testimonials"
+                className="block py-2 px-3 text-white  dark:hover:bg-gray-700 rounded md:bg-transparent md:hover:text-blue-700 dark:text-white dark:md:hover:text-blue-500"
+              >
+                Testimonials
+              </a>
+            </li>
+            <li>
+              <Link href="/try-now">
+                <Button className="bg-blue-700 hover:bg-blue-800 text-white w-full py-2 rounded-lg md:py-0 md:w-auto" size={"lg"}>
+                  Try Now
+                </Button>
+              </Link>
+            </li>
+          </ul>
         </div>
       </div>
-      {/* Collapsible Mobile Menu */}
-      {isMenuOpen && (
-        <div className="md:hidden bg-black text-white space-y-4 px-4 py-6">
-          <a href="#about" className="block hover:text-gray-400 transition duration-300">
-            About
-          </a>
-          <a href="#features" className="block hover:text-gray-400 transition duration-300">
-            Features
-          </a>
-          <a href="#testimonials" className="block hover:text-gray-400 transition duration-300">
-            Testimonials
-          </a>
-          <Link href="/try-now">
-            <Button className="bg-slate-100 hover:bg-slate-200 text-black w-full py-2 rounded-lg" size={"lg"}>
-              Try Now
-            </Button>
-          </Link>
-        </div>
-      )}
     </nav>
   );
 }

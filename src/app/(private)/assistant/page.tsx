@@ -1,8 +1,11 @@
 import React from 'react'
+import AssistantPage from './components/AssistantPage'
 
 function Assistant() {
   return (
-    <div>Assistant</div>
+    <div>
+      <AssistantPage />
+    </div>
   )
 }
 

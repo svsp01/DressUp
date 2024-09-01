@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import gsap from "gsap";
 import Image from "next/image";
 import { useEffect } from "react";
@@ -17,11 +17,11 @@ export default function Features() {
   }, []);
 
   return (
-    <section id="features" className="py-24  bg-black text-white">
-      <div className="container mx-auto text-center">
+    <section id="features" className="py-24 bg-black text-white w-full">
+      <div className="max-w-screen-xl mx-auto text-center px-4 sm:px-6 lg:px-8">
         <h2 className="text-4xl font-bold mb-12">Features</h2>
-        <div className="grid bg-black text-white grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          <div className="feature-card p-8 shadow-white  shadow-sm rounded-lg transform hover:scale-105 transition duration-300">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="feature-card p-8 shadow-white shadow-sm rounded-lg transform hover:scale-105 transition duration-300">
             <Image
               src={img3}
               alt="Virtual Dress Change"
@@ -34,7 +34,7 @@ export default function Features() {
               Try on different outfits virtually and see how they look on you.
             </p>
           </div>
-          <div className="feature-card p-8  shadow-white  shadow-sm rounded-lg transform hover:scale-105 transition duration-300">
+          <div className="feature-card p-8 shadow-white shadow-sm rounded-lg transform hover:scale-105 transition duration-300">
             <Image
               src={img2}
               alt="Image Enhancement"
@@ -43,12 +43,12 @@ export default function Features() {
             <h3 className="text-2xl font-semibold mb-2">Image Enhancement</h3>
             <p>Enhance your old photos to view them in the latest fashion.</p>
           </div>
-          <div className="feature-card p-8  shadow-white  shadow-sm rounded-lg transform hover:scale-105 transition duration-300">
+          <div className="feature-card p-8 shadow-white shadow-sm rounded-lg transform hover:scale-105 transition duration-300">
             <Image src={img1} alt="Garment Details" className="mb-4 mx-auto" />
             <h3 className="text-2xl font-semibold mb-2">Garment Details</h3>
             <p>Extract and view detailed information about the garments.</p>
           </div>
-          <div className="feature-card p-8  shadow-white  shadow-sm rounded-lg transform hover:scale-105 transition duration-300">
+          <div className="feature-card p-8 shadow-white shadow-sm rounded-lg transform hover:scale-105 transition duration-300">
             <Image src={img4} alt="Chat Assistant" className="mb-4 mx-auto" />
             <h3 className="text-2xl font-semibold mb-2">Chat Assistant</h3>
             <p>Get fashion advice and support through our AI chat assistant.</p>

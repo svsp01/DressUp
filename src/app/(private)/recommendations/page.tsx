@@ -1,8 +1,11 @@
 import React from 'react'
+import TrendsScreen from './components/TrendsScreen'
 
 function Recommendations() {
   return (
-    <div>Recommendations</div>
+    <div>
+      <TrendsScreen/>
+    </div>
   )
 }
 

@@ -1,8 +1,9 @@
 import React from 'react'
+import DigitalCloset from './components/DigitalCloset'
 
 function Closet() {
   return (
-    <div>Closet</div>
+    <div><DigitalCloset /></div>
   )
 }
 

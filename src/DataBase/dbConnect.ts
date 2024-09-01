@@ -28,7 +28,7 @@ async function dbConnect() {
 
     cached.promise = mongoose
       .connect(
-        "mongodb://localhost:27017/DressUp",
+        "mongodb+srv://VantaVerseSakthiSvsp:WfeDMZ$CYkThZm2@vantaverselovegame.cjjckqh.mongodb.net/DressUp?retryWrites=true&w=majority",
         opts
       )
       .then((mongoose) => {

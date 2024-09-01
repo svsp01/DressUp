@@ -14,7 +14,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <section id="hero" className="relative h-screen bg-video">
+    <section id="hero" className="relative w-full h-screen bg-video">
       <video
         className="absolute top-0 left-0 w-full h-full object-cover"
         src="/assets/aivideo.mp4"
@@ -22,11 +22,11 @@ export default function Hero() {
         muted
         loop
       />
-      <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-center items-center text-white text-center">
-        <h1 className="text-6xl font-bold mb-4 hero-text">
+      <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-center items-center text-white text-center px-4">
+        <h1 className="text-4xl md:text-6xl font-bold mb-4 hero-text">
           Revolutionize Your Wardrobe Virtually
         </h1>
-        <p className="text-xl mb-8 hero-text">
+        <p className="text-lg md:text-xl mb-8 hero-text">
           Experience the future of fashion with our advanced virtual clothing
           trial app.
         </p>

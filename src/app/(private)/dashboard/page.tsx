@@ -1,8 +1,11 @@
 import React from 'react'
+import HomeScreen from './components/HomeScreen'
 
 function page() {
   return (
-    <div className=''>page</div>
+    <div className=''>
+      <HomeScreen/>
+    </div>
   )
 }
 
