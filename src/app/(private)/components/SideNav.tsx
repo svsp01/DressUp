@@ -1,5 +1,4 @@
 "use client";
-
 import { Button } from "@/components/ui/button";
 import handleLogout from "@/lib/authUtils";
 import {
@@ -7,7 +6,6 @@ import {
   HomeIcon,
   ShoppingBagIcon,
   UserIcon,
-  SparklesIcon,
   ArchiveBoxIcon,
   CogIcon,
 } from "@heroicons/react/24/outline";
@@ -16,7 +14,7 @@ import React, { useState } from "react";
 import ConfirmationModal from "./ReusableComponents/ConfirmationModel";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import Logo from "@/assets/Logo.jpg";
+import { TrendingUp } from "lucide-react";
 
 function SideNav() {
   const router = useRouter();
@@ -63,8 +61,8 @@ function SideNav() {
           href="/recommendations"
           className="flex items-center px-4 py-2 text-gray-200 hover:bg-blue-600 hover:text-white rounded-md"
         >
-          <SparklesIcon className="w-6 h-6 mr-3" />
-          Style
+          <TrendingUp className="w-6 h-6 mr-3" />
+          Trend
         </Link>
         <Link
           href="/assistant"

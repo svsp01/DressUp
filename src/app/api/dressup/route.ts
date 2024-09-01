@@ -16,8 +16,8 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
 
     if (body) {
+      
       const { humanImage, dressImage } = body;
-
       const client = await Client.connect("Kwai-Kolors/Kolors-Virtual-Try-On");
 
       const humanBlob = base64ToBlob(humanImage);

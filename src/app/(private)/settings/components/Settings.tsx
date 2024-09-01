@@ -25,7 +25,6 @@ export default function Settings() {
       <h1 className="text-3xl font-bold mb-8">Settings</h1>
 
       <div className="space-y-8">
-        {/* AI Model Configuration */}
         <div className="space-y-4">
           <h2 className="text-2xl font-medium">AI Model Configuration</h2>
 
@@ -49,7 +48,6 @@ export default function Settings() {
           </div>
         </div>
 
-        {/* Model Settings */}
         <div className="space-y-4">
           <h2 className="text-2xl font-medium">Model Settings</h2>
 
@@ -112,7 +110,6 @@ export default function Settings() {
                 Configure settings for the Text to Text model, focusing on
                 natural language processing and text generation.
               </p>
-              {/* Additional settings can be added here */}
             </div>
           )}
 
@@ -122,7 +119,6 @@ export default function Settings() {
                 Configure settings for the Text to Image model, used for
                 generating images from text descriptions.
               </p>
-              {/* Additional settings can be added here */}
             </div>
           )}
 
