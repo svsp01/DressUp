@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
-import { Bell, MessageSquare, PlusCircle, Wand2,  MessageCircle, TrendingUp } from 'lucide-react';
+import { Bell, MessageSquare, PlusCircle, Wand2, MessageCircle, TrendingUp, Wand2Icon, ClipboardType, DownloadIcon, Share2Icon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 interface DressUp {
@@ -39,11 +39,11 @@ const HomeScreen: React.FC = () => {
     };
 
     return (
-        <div className="p-4 space-y-6 bg-gray-900 text-white min-h-screen">
+        <div className="p-4 space-y-6 bg-gray-950 text-white min-h-screen">
             {/* Header */}
             <header className="flex justify-between items-center">
                 <h1 className="text-2xl font-bold">Dashboard</h1>
-                <div className="flex space-x-4">
+                <div className="flex text-black space-x-4">
                     <Button size="icon" variant="outline">
                         <Bell className="w-5 h-5" />
                     </Button>
@@ -58,28 +58,28 @@ const HomeScreen: React.FC = () => {
                 <Button
                     size="lg"
                     variant="outline"
-                    className="flex flex-col items-center py-4"
+                    className="flex gap-2 bg-black text-white  items-center py-4"
                     onClick={() => navigateTo('try-on')}
                 >
-                    <Wand2 className="w-6 h-6 mb-2" />
+                    <Wand2 className="w-4  h-4 " />
                     Try-On
                 </Button>
                 <Button
                     size="lg"
                     variant="outline"
-                    className="flex flex-col items-center py-4"
+                    className="flex bg-black gap-2 items-center py-4"
                     onClick={() => navigateTo('trends')}
                 >
-                    <TrendingUp className="w-6 h-6 mb-2" />
+                    <TrendingUp className="w-4  h-4 " />
                     Trends
                 </Button>
                 <Button
                     size="lg"
                     variant="outline"
-                    className="flex flex-col items-center py-4"
+                    className="flex bg-black text-white gap-2 items-center py-4"
                     onClick={() => navigateTo('ai-chat')}
                 >
-                    <MessageCircle className="w-6 h-6 mb-2" />
+                    <MessageCircle className="w-4  h-4 " />
                     AI Chat
                 </Button>
             </section>
@@ -95,18 +95,23 @@ const HomeScreen: React.FC = () => {
                                     <CardContent className="p-0">
                                         <img src={dressUp.imgUrl} alt={dressUp.title} className="rounded-t-lg w-full h-[200px] object-cover" />
                                     </CardContent>
-                                    <CardFooter className="p-2 flex justify-between items-center">
+                                    <CardFooter className="p-2 flex text-white justify-between items-center">
                                         <span>{dressUp.title}</span>
-                                        <Button size="sm" variant="ghost">
-                                            <PlusCircle className="w-4 h-4" />
-                                        </Button>
+                                        <div>
+                                            <Button size="sm" variant="ghost">
+                                                <DownloadIcon className="w-4 h-4" />
+                                            </Button>
+                                            <Button size="sm" variant="ghost">
+                                                <Share2Icon className="w-4 h-4" />
+                                            </Button>
+                                        </div>
                                     </CardFooter>
                                 </Card>
                             </CarouselItem>
                         ))}
                     </CarouselContent>
-                    <CarouselPrevious />
-                    <CarouselNext />
+                    <CarouselPrevious className='text-black' />
+                    <CarouselNext className='text-black' />
                 </Carousel>
             </section>
 
@@ -124,8 +129,9 @@ const HomeScreen: React.FC = () => {
                         >
                             <img src={trend.imgUrl} alt={trend.title} className="w-full h-[250px] object-cover" />
                             <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 p-2 flex justify-between items-center">
-                                <span>{trend.title}</span>
-                                <Button size="sm" variant="ghost">
+                                <span className='max-w-15 truncate'>{trend.title}</span>
+                                <Button size="sm" className='flex gap-2' variant="secondary">
+                                    Add To Closet
                                     <PlusCircle className="w-4 h-4" />
                                 </Button>
                             </div>
@@ -143,10 +149,10 @@ const HomeScreen: React.FC = () => {
                             <CardContent className="p-0">
                                 <img src={item.imgUrl} alt={item.title} className="rounded-t-lg w-full h-[150px] object-cover" />
                             </CardContent>
-                            <CardFooter className="p-2 flex justify-between items-center">
+                            <CardFooter className="p-2 flex text-white justify-between items-center">
                                 <span>{item.title}</span>
                                 <Button size="sm" variant="ghost">
-                                    <PlusCircle className="w-4 h-4" />
+                                    <Share2Icon className="w-4 h-4" />
                                 </Button>
                             </CardFooter>
                         </Card>
@@ -163,8 +169,8 @@ const HomeScreen: React.FC = () => {
                             <CardContent className="p-0">
                                 <img src={trend.imgUrl} alt={trend.title} className="rounded-t-lg w-full h-[200px] object-cover" />
                             </CardContent>
-                            <CardFooter className="flex-col items-start">
-                                <h3 className="text-lg font-bold">{trend.title}</h3>
+                            <CardFooter className="flex-col py-2 items-start">
+                                <h3 className="text-lg text-white font-bold">{trend.title}</h3>
                                 <p className="text-gray-400">Check out the latest in {trend.title} for {currentSeason}.</p>
                             </CardFooter>
                         </Card>

@@ -4,7 +4,7 @@ import { Tabs,  TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Camera, Image, MessageSquare, Send, HelpCircle } from 'lucide-react';
+import { Camera, Image, MessageSquare, Send, HelpCircle, SendHorizontalIcon } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -55,13 +55,13 @@ const AssistantPage = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-900 text-white">
-      <header className="p-4 bg-gray-800">
+    <div className="flex flex-col min-h-screen bg-gray-950 text-white">
+      <header className="p-4 bg-gray-950">
         <h1 className="text-2xl font-bold">Virtual Try-On Assistant</h1>
       </header>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-grow flex flex-col">
-        <TabsList className="grid w-full grid-cols-3 bg-gray-800">
+        <TabsList className="grid w-full grid-cols-3 bg-gray-950">
           <TabsTrigger value="text-to-text" className="data-[state=active]:bg-gray-700">
             <MessageSquare className="mr-2" />
             Chat Assistant
@@ -94,7 +94,7 @@ const AssistantPage = () => {
               transition={{ duration: 0.3 }}
               className="flex-grow flex flex-col p-4"
             >
-              <ScrollArea className="flex-grow mb-4 bg-gray-800 rounded-lg p-4">
+              <ScrollArea className=" mb-4 h-[400px] bg-gray-900 rounded-lg p-4">
                 {chatHistory.map((msg: any, index: any) => (
                   <div key={index} className={`mb-2 ${msg.type === 'user' ? 'text-right' : 'text-left'}`}>
                     <motion.span
@@ -114,9 +114,9 @@ const AssistantPage = () => {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
-                  className="flex-grow mr-2 bg-gray-800"
+                  className="flex-grow mr-2 bg-gray-950"
                 />
-                <Button onClick={handleSubmit}><Send /></Button>
+                <Button onClick={handleSubmit}><SendHorizontalIcon /></Button>
               </div>
             </motion.div>
           )}
@@ -135,7 +135,7 @@ const AssistantPage = () => {
                 placeholder="Describe the outfit or item you want to generate..."
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                className="mb-4 bg-gray-800"
+                className="mb-4 bg-gray-950"
               />
               <Button onClick={handleSubmit}>Generate Image</Button>
               {/* Image would be displayed here after generation */}
@@ -176,7 +176,7 @@ const AssistantPage = () => {
                 placeholder="Ask about the uploaded image or request styling advice..."
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                className="mb-4 bg-gray-800"
+                className="mb-4 bg-gray-950"
               />
               <Button onClick={handleSubmit}>Analyze</Button>
             </motion.div>
