@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/DataBase/dbConnect";
 import { verifyToken } from "@/middle/verifyToken";
 import ClothingItem from "@/models/ClothingItem";
-import { ObjectId } from "mongodb";
 
 export async function POST(request: NextRequest) {
   try {
