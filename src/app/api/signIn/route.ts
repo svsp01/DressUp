@@ -3,6 +3,7 @@ import UserModel from "@/models/UserModel";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { sign } from "jsonwebtoken";
+import SubscriptionModel from "@/models/SubscriptionModel";
 
 export async function GET() {
   try {
@@ -33,8 +34,8 @@ export async function POST(request: NextRequest) {
         profileImageUrl,
         monthlyIncome,
         bio,
-        skills, 
-        interests
+        skills,
+        interests,
       } = body;
 
       // Check for existing user
@@ -51,8 +52,18 @@ export async function POST(request: NextRequest) {
       const hashedPassword = await bcrypt.hash(password, 10);
 
       // Split and clean up skills and interests
-      const cleanedSkills = skills ? skills.split(',').map((skill:string) => skill.trim()).filter((skill:string) => skill) : [];
-      const cleanedInterests = interests ? interests.split(',').map((interest:string) => interest.trim()).filter((interest:string) => interest) : [];
+      const cleanedSkills = skills
+        ? skills
+            .split(",")
+            .map((skill: string) => skill.trim())
+            .filter((skill: string) => skill)
+        : [];
+      const cleanedInterests = interests
+        ? interests
+            .split(",")
+            .map((interest: string) => interest.trim())
+            .filter((interest: string) => interest)
+        : [];
 
       // Create new user
       const newUser = {
@@ -68,14 +79,25 @@ export async function POST(request: NextRequest) {
         createdAt: new Date(),
         lastLogin: new Date(),
         skills: cleanedSkills,
-        interests: cleanedInterests
+        interests: cleanedInterests,
       };
 
-      const result = await UserModel.create(newUser);
+      const userResult = await UserModel.create(newUser);
 
+      const subscription = {
+        userId: userResult._id,
+        plan: "free", 
+        creditLimit: 100, 
+        usedCredit: 0,
+      };
+
+      await SubscriptionModel.create(subscription);
 
       return NextResponse.json(
-        { message: "User created successfully", userId: result._id },
+        {
+          message: "User and subscription created successfully",
+          userId: userResult._id,
+        },
         { status: 201 }
       );
     } else {
@@ -121,16 +143,13 @@ export async function POST(request: NextRequest) {
       response.cookies.set("token", token, {
         httpOnly: true,
         sameSite: "strict",
-        maxAge: 60 * 60 * 1000, 
+        maxAge: 60 * 60 * 1000,
       });
 
       return response;
     }
   } catch (error) {
     console.error(error);
-    return NextResponse.json(
-      { error: "An error occurred" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "An error occurred" }, { status: 500 });
   }
 }

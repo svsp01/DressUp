@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import ProfileScreen from './components/Profile'
+import userServices from '@/services/userServices';
 
 function Profile() {
   const user = {
@@ -16,6 +17,28 @@ function Profile() {
     lastLogin: "2024-09-01T05:32:50.040+00:00",
     __v: 0
   }
+
+  // const [userDetail, setUserDetail] = useState<Trend[]>([]);
+
+  // const fetchTrends = async (page: number) => {
+  //   try {
+  //     const data = await userServices.getAllTrends(page, 10);
+
+  //     console.log(data?.result, ">>>");
+  //     setTrends(data?.result?.data);
+  //     setHasMore(data?.result.hasMore);
+  //   } catch (error) {
+  //     console.error("Error fetching trends:", error);
+  //     toast({
+  //       title: "Error",
+  //       description: "Unable to fetch trends data.",
+  //     });
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   fetchTrends(page);
+  // }, [page]);
 
   return (
     <div><ProfileScreen user={user} /></div>

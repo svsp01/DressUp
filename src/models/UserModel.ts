@@ -14,6 +14,7 @@ const UserSchema = new mongoose.Schema({
   //   interests: { type: [String],  required: true},
   createdAt: { type: Date, default: Date.now },
   lastLogin: { type: Date, default: Date.now },
+  subscriptions: { type: mongoose.Schema.Types.ObjectId, ref: "subscriptions" },
 });
 
 export default mongoose.models.User || mongoose.model("User", UserSchema);
