@@ -122,7 +122,7 @@ const ItemGrid: React.FC<{
 }> = ({ items, onEdit, onDelete }) => (
   <motion.div layout className="flex flex-wrap justify-start">
     <AnimatePresence>
-      {items.map((item) => (
+      {items?.map((item) => (
         <ClothingItem
           key={item._id}
           item={item}
@@ -378,7 +378,7 @@ export const ClothingItemsPage: React.FC = () => {
       console.error("Error adding/updating item:", error);
     }
   };
-  const filteredItems = items.filter(
+  const filteredItems = items?.filter(
     (item) =>
       (activeCategory === "All" || item.category === activeCategory) &&
       (activeCluster === "All" ||

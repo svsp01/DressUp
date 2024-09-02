@@ -1,10 +1,9 @@
 "use client";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Camera, Upload, RefreshCw, Download, Sparkles } from "lucide-react";
-import { toast } from "@/components/ui/use-toast";
 import {
   Dialog,
   DialogContent,
@@ -13,10 +12,19 @@ import {
 } from "@/components/ui/dialog";
 import dressUpServices from "@/services/dressUpServices";
 import Image from "next/image";
+import closetServices from "@/services/closetServices";
+import { useToast } from "@/components/ui/use-toast";
+import { useDynamicToast } from "@/lib/toastUtils";
 
 interface Dress {
-  id: string;
-  imageUrl: string;
+  _id?: string;
+  title: string;
+  description: string;
+  image: string;
+  category: string;
+  type: string;
+  color: string;
+  season: string;
 }
 
 const VirtualWardrobeRoom: React.FC = () => {
@@ -25,14 +33,21 @@ const VirtualWardrobeRoom: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showResults, setShowResults] = useState<boolean>(false);
   const [resultImage, setResultImage] = useState<string | null>(null);
-  const [wardrobe, setWardrobe] = useState<Dress[]>([
-    { id: "1", imageUrl: "https://github.com/shadcn.png" },
-    { id: "2", imageUrl: "https://github.com/shadcn.png" },
-    
-  ]);
+  const [wardrobe, setWardrobe] = useState<any[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const dressFileInputRef = useRef<HTMLInputElement>(null);
+  const { showToast } = useDynamicToast();
+
+  const fetchAllItems = async () => {
+    const fetchedItems: any = await closetServices.fetchItems();
+    console.log(fetchedItems, "????");
+    setWardrobe(fetchedItems?.data);
+  };
+
+  useEffect(() => {
+    fetchAllItems();
+  }, []);
 
   const handleHumanImageUpload = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -67,12 +82,11 @@ const VirtualWardrobeRoom: React.FC = () => {
       // setSelectedDress(dress);
       handleTryOn(dress);
     } else {
-      toast({
-        title: "Upload Your Photo First",
-        description:
-          "Please upload a photo of yourself before trying on clothes.",
-        variant: "destructive",
-      });
+      showToast(
+        "Upload Your Photo First",
+        "Please upload a photo of yourself before trying on clothes.",
+        "destructive"
+      );
     }
   };
 
@@ -92,47 +106,100 @@ const VirtualWardrobeRoom: React.FC = () => {
 
       try {
         const humanBlob = await fetch(humanImage).then((res) => res.blob());
-        const dressBlob = await fetch(dress.imageUrl).then((res) => res.blob());
+        const dressBlob = await fetch(dress.image).then((res) => res.blob());
 
-        // Convert Blobs to Base64
         const humanBase64 = await blobToBase64(humanBlob);
         const dressBase64 = await blobToBase64(dressBlob);
 
         const result = await dressUpServices.dressUp({
+          clothingItemId: dress._id,
           humanImage: humanBase64,
           dressImage: dressBase64,
         });
-
-        setResultImage(result?.result?.data[0]?.url);
-        setShowResults(true);
+        if (result?.error?.queue) {
+          showToast(
+            "Service Overloaded",
+            "The service is currently experiencing high traffic. Please try again later.",
+            "destructive"
+          );
+        } else {
+          setResultImage(result?.result?.data[0]?.url);
+          setShowResults(true);
+        }
       } catch (error: any) {
-        console.error("Failed to process dress-up:", error.message);
+        console.log("Failed to process dress-up:", error);
+        if (error?.queue) {
+          showToast(
+            "Service Overloaded",
+            "The service is currently experiencing high traffic. Please try again later.",
+            "destructive"
+          );
+        } else {
+          showToast(
+            "Error",
+            "An error occurred while processing your request.",
+            "destructive"
+          );
+        }
       } finally {
         setIsLoading(false);
       }
     }
   };
 
-  const handleCameraCapture = () => {
-    if (cameraInputRef.current) {
-      cameraInputRef.current.click();
-    }
-  };
+  // const handleCameraCapture = () => {
+  //   if (cameraInputRef.current) {
+  //     cameraInputRef.current.click();
+  //   }
+  // };
 
-  const handleCameraInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+  // const handleCameraInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = event.target.files?.[0];
+  //   if (file) {
+  //     const imageUrl = URL.createObjectURL(file);
+  //     const newDress: Dress = { _id: Date.now().toString(), image:imageUrl };
+  //     setWardrobe((prev) => [...prev, newDress]);
+  //   }
+  // };
+
+  const handleDressUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
     if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      const newDress: Dress = { id: Date.now().toString(), imageUrl };
-      setWardrobe((prev) => [...prev, newDress]);
-    }
-  };
+      const imageUrl = await blobToBase64(file);
 
-  const handleDressUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      const newDress: Dress = { id: Date.now().toString(), imageUrl };
+      const fileName = file.name.toLowerCase();
+      const defaultTitle = fileName.split(".")[0];
+
+      let category = "Unknown";
+      let color = "Unknown";
+      let season = "All Seasons";
+
+      if (fileName.includes("summer")) {
+        category = "Dress";
+        season = "Summer";
+      } else if (fileName.includes("winter")) {
+        category = "Jacket";
+        season = "Winter";
+      } else if (fileName.includes("red")) {
+        color = "Red";
+      } else if (fileName.includes("blue")) {
+        color = "Blue";
+      }
+      const newDress: Dress = {
+        title: defaultTitle.charAt(0).toUpperCase() + defaultTitle.slice(1),
+        description: "A beautiful piece from your wardrobe.",
+        category: category,
+        type: "Casual",
+        color: color,
+        season: season,
+        image: imageUrl,
+      };
+
+      await closetServices.AddCloset(newDress);
+      await fetchAllItems();
+
       setWardrobe((prev) => [...prev, newDress]);
     }
   };
@@ -163,7 +230,7 @@ const VirtualWardrobeRoom: React.FC = () => {
           <CardContent className="p-6">
             <h2 className="text-2xl font-semibold mb-4">Your Wardrobe</h2>
             <div className="grid grid-cols-3 p-10 scroll gap-4 max-h-96 overflow-y-auto">
-              {wardrobe.map((dress) => (
+              {wardrobe?.map((dress) => (
                 <motion.div
                   key={dress.id}
                   whileHover={{ scale: 1.05 }}
@@ -174,7 +241,7 @@ const VirtualWardrobeRoom: React.FC = () => {
                   onClick={() => handleDressSelect(dress)}
                 >
                   <img
-                    src={dress.imageUrl}
+                    src={dress.image}
                     alt={`Dress ${dress.id}`}
                     className="w-full h-auto rounded-lg shadow-md"
                   />
@@ -188,12 +255,12 @@ const VirtualWardrobeRoom: React.FC = () => {
               >
                 <Upload className="mr-2 h-4 w-4" /> Upload Dress
               </Button>
-              <Button
+              {/* <Button
                 onClick={handleCameraCapture}
                 className="bg-blue-500 hover:bg-blue-600"
               >
                 <Camera className="mr-2 h-4 w-4" /> Take Photo
-              </Button>
+              </Button> */}
             </div>
             <input
               type="file"
@@ -202,14 +269,14 @@ const VirtualWardrobeRoom: React.FC = () => {
               accept="image/*"
               className="hidden"
             />
-            <input
+            {/* <input
               type="file"
               ref={cameraInputRef}
               onChange={handleCameraInput}
               accept="image/*"
               capture="environment"
               className="hidden"
-            />
+            /> */}
           </CardContent>
         </Card>
 

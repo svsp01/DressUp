@@ -9,6 +9,7 @@ interface ClothingItem extends Document {
   type: string;
   color: string;
   season: string;
+  usageCount?: number; 
 }
 
 const ClothingItemSchema: Schema = new Schema({
@@ -20,6 +21,7 @@ const ClothingItemSchema: Schema = new Schema({
   type: { type: String, required: true },
   color: { type: String, required: true },
   season: { type: String, required: true },
+  usageCount: { type: Number, default: 0 } 
 });
 
 export default mongoose.models.ClothingItem || mongoose.model<ClothingItem>('ClothingItem', ClothingItemSchema);
