@@ -204,7 +204,7 @@ const HomeScreen: React.FC = () => {
                       alt={dressUp?.prompt}
                       className="rounded-t-lg w-full h-[200px] object-cover cursor-pointer"
                       onClick={() =>
-                        handleImageClick(dressUp?.aiResponse?.data[0]?.url)
+                        handleImageClick(dressUp?.additionalData?.imageUrl)
                       }
                     />
                   </CardContent>
