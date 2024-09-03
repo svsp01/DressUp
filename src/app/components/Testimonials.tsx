@@ -53,7 +53,7 @@ export default function Testimonials() {
           <div className="testimonial-item p-8 mb-8 bg-black shadow-lg rounded-lg relative">
             <Quote className="absolute top-0 left-0 text-6xl text-indigo-200 opacity-50" />
             <p className="text-lg italic mb-4">
-              "{testimonials[currentSlide].text}"
+            &quot;{testimonials[currentSlide].text}&quot;
             </p>
             <h3 className="text-xl font-semibold">
               - {testimonials[currentSlide].author}

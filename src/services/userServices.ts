@@ -50,8 +50,10 @@ const getUserById = async () => {
   }
 };
 
-export default {
+const userServices = {
   login,
   getUserById,
   signup,
 };
+
+export default userServices

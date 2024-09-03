@@ -13,6 +13,7 @@ const Chat = async (Data: any): Promise<any> => {
   }
 };
 
-export default {
+const chatServices = {
   Chat,
 };
+export default chatServices;

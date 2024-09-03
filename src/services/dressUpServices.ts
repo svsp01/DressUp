@@ -13,6 +13,8 @@ const dressUp = async (Data: any): Promise<any> => {
   }
 };
 
-export default {
-  dressUp,
-};
+const dressUpServices= {
+  dressUp
+}
+
+export default dressUpServices

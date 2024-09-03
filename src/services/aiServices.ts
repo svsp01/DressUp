@@ -13,6 +13,7 @@ const GetAiGenerations = async (): Promise<any> => {
   }
 };
 
-export default {
-  GetAiGenerations,
+const aiServices = {
+  GetAiGenerations
 };
+export default aiServices;
