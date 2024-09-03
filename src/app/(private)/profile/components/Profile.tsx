@@ -1,32 +1,43 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { User, CreditCard, Bell, Settings, LogOut, Edit3 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
 
-const ProfileScreen = ({ user }: any) => {
+const ProfileScreen = ({ userDetail, subscriptionDetail }: any) => {
   const [activeTab, setActiveTab] = useState("overview");
   const [isEditing, setIsEditing] = useState(false);
-  const [editableUser, setEditableUser] = useState(user);
+  const [editableUser, setEditableUser] = useState(userDetail);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setEditableUser({ ...editableUser, [name]: value });
   };
 
+  useEffect(() => {
+    setEditableUser(userDetail);
+  }, [userDetail]);
+
   const handleEditClick = () => {
     setIsEditing(true);
   };
 
   const handleCancelClick = () => {
-    setEditableUser(user);
+    setEditableUser(userDetail);
     setIsEditing(false);
   };
 
@@ -53,9 +64,7 @@ const ProfileScreen = ({ user }: any) => {
           <p>{value}</p>
         )}
       </div>
-      {isEditing && (
-        <Edit3 className="text-gray-500 w-4 h-4 cursor-pointer" />
-      )}
+      {isEditing && <Edit3 className="text-gray-500 w-4 h-4 cursor-pointer" />}
     </div>
   );
 
@@ -65,27 +74,51 @@ const ProfileScreen = ({ user }: any) => {
         <header className="flex items-center justify-between mb-8">
           <div className="flex items-center space-x-4">
             <Avatar className="h-20 w-20">
-              <AvatarImage src={user.profileImageUrl} alt={user.username} />
-              <AvatarFallback>{user.firstName[0]}{user.lastName[0]}</AvatarFallback>
+              <AvatarImage
+                src={userDetail?.profileImageUrl}
+                alt={userDetail?.username}
+              />
+              <AvatarFallback>
+                {userDetail?.firstName}
+                {userDetail?.lastName}
+              </AvatarFallback>
             </Avatar>
             <div>
-              <h1 className="text-3xl font-bold">{user.firstName} {user.lastName}</h1>
-              <p className="text-gray-400">@{user.username}</p>
+              <h1 className="text-3xl font-bold">
+                {userDetail?.firstName} {userDetail?.lastName}
+              </h1>
+              <p className="text-gray-400">@{userDetail?.username}</p>
             </div>
           </div>
           {isEditing ? (
             <div className="flex space-x-2">
-              <Button variant="outline" className="text-black" onClick={handleCancelClick}>Cancel</Button>
-              <Button onClick={handleSaveClick} variant="ghost">Save Changes</Button>
+              <Button
+                variant="outline"
+                className="text-black"
+                onClick={handleCancelClick}
+              >
+                Cancel
+              </Button>
+              <Button onClick={handleSaveClick} variant="ghost">
+                Save Changes
+              </Button>
             </div>
           ) : (
-            <Button variant="outline" className="text-black" onClick={handleEditClick}>
+            <Button
+              variant="outline"
+              className="text-black"
+              onClick={handleEditClick}
+            >
               <Settings className="mr-2 text-black" /> Edit Profile
             </Button>
           )}
         </header>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+        <Tabs
+          value={activeTab}
+          onValueChange={setActiveTab}
+          className="space-y-4"
+        >
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="subscription">Subscription</TabsTrigger>
@@ -103,19 +136,33 @@ const ProfileScreen = ({ user }: any) => {
                   <CardTitle>Profile Overview</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {renderField("Full Name", `${editableUser.firstName} ${editableUser.lastName}`, "firstName")}
-                  {renderField("Email", editableUser.email, "email")}
+                  {renderField(
+                    "Full Name",
+                    `${editableUser?.firstName} ${editableUser?.lastName}`,
+                    "firstName"
+                  )}
+                  {renderField("Email", editableUser?.email, "email")}
                   <div className="flex items-center space-x-4">
                     <CreditCard className="text-green-400" />
                     <div>
                       <p className="text-sm text-gray-400">Credit Limit</p>
-                      <p>${10000}</p>
+                      <p>${subscriptionDetail?.creditLimit}</p>
                     </div>
                   </div>
                   <div>
                     <p className="text-sm text-gray-400 mb-2">Credit Used</p>
-                    <Progress value={(7500 / 10000) * 100} className="h-2 text-green-300" />
-                    <p className="text-right text-sm mt-1">$7,500 / $10,000</p>
+                    <Progress
+                      value={
+                        (subscriptionDetail?.usedCredit /
+                          subscriptionDetail?.creditLimit) *
+                        100
+                      }
+                      className="h-2 text-green-300"
+                    />
+                    <p className="text-right text-sm mt-1">
+                      ${subscriptionDetail?.usedCredit} / $
+                      {subscriptionDetail?.creditLimit}
+                    </p>
                   </div>
                 </CardContent>
               </Card>
@@ -135,15 +182,34 @@ const ProfileScreen = ({ user }: any) => {
                 <CardContent className="space-y-4">
                   <div>
                     <p className="text-sm text-gray-400">Current Plan</p>
-                    <p className="text-xl font-bold">Premium</p>
+                    <p className="text-xl font-bold">
+                      {subscriptionDetail?.plan.charAt(0).toUpperCase() +
+                        subscriptionDetail?.plan.slice(1)}
+                    </p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-400">Next Billing Date</p>
-                    <p>October 1, 2024</p>
+                    <p className="text-sm text-gray-400">
+                      Subscription Start Date
+                    </p>
+                    <p>
+                      {new Date(
+                        subscriptionDetail?.createdAt
+                      ).toLocaleDateString()}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-400">Last Updated</p>
+                    <p>
+                      {new Date(
+                        subscriptionDetail?.updatedAt
+                      ).toLocaleDateString()}
+                    </p>
                   </div>
                 </CardContent>
                 <CardFooter>
-                  <Button variant="outline" className="w-full">Manage Subscription</Button>
+                  <Button variant="outline" className="w-full">
+                    Manage Subscription
+                  </Button>
                 </CardFooter>
               </Card>
             </motion.div>
@@ -161,13 +227,28 @@ const ProfileScreen = ({ user }: any) => {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {[
-                    { id: 1, title: "Credit Limit Alert", description: "You've used 75% of your credit limit." },
-                    { id: 2, title: "Subscription Renewal", description: "Your subscription will renew in 7 days." },
+                    {
+                      id: 1,
+                      title: "Credit Limit Alert",
+                      description: `You've used ${(
+                        (subscriptionDetail?.usedCredit /
+                          subscriptionDetail?.creditLimit) *
+                        100
+                      ).toFixed(2)}% of your credit limit.`,
+                    },
+                    {
+                      id: 2,
+                      title: "Subscription Update",
+                      description:
+                        "Your subscription details were updated recently.",
+                    },
                   ].map((notification) => (
                     <Alert key={notification.id} className="bg-gray-700">
                       <Bell className="h-4 w-4" />
                       <AlertTitle>{notification.title}</AlertTitle>
-                      <AlertDescription>{notification.description}</AlertDescription>
+                      <AlertDescription>
+                        {notification.description}
+                      </AlertDescription>
                     </Alert>
                   ))}
                 </CardContent>
@@ -184,20 +265,28 @@ const ProfileScreen = ({ user }: any) => {
           <Card className="mt-8 bg-gray-800">
             <CardHeader>
               <CardTitle>Account Activity</CardTitle>
-              <CardDescription>Recent login and account updates</CardDescription>
+              <CardDescription>
+                Recent login and account updates
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
                   <div>
                     <p className="font-medium">Last Login</p>
-                    <p className="text-sm text-gray-400">{new Date(user.lastLogin).toLocaleString()}</p>
+                    <p className="text-sm text-gray-400">
+                      {new Date(userDetail?.lastLogin).toLocaleString()}
+                    </p>
                   </div>
-                  <Button variant="ghost" size="sm"><LogOut className="mr-2" /> Sign Out</Button>
+                  <Button variant="ghost" size="sm">
+                    <LogOut className="mr-2" /> Sign Out
+                  </Button>
                 </div>
                 <div>
                   <p className="font-medium">Account Created</p>
-                  <p className="text-sm text-gray-400">{new Date(user.createdAt).toLocaleString()}</p>
+                  <p className="text-sm text-gray-400">
+                    {new Date(userDetail?.createdAt).toLocaleDateString()}
+                  </p>
                 </div>
               </div>
             </CardContent>

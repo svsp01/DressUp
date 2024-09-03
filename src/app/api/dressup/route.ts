@@ -96,7 +96,9 @@ export async function POST(request: NextRequest) {
         );
       }
 
-      const client = await Client.connect("Sakthisvsp/Kolors-Virtual-Try-On");
+      const client = await Client.connect("Kwai-Kolors/Kolors-Virtual-Try-On", {
+        hf_token: "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",
+      });
 
       const humanBlob = base64ToBlob(humanImage);
       const dressBlob = base64ToBlob(dressImage);
@@ -105,11 +107,11 @@ export async function POST(request: NextRequest) {
         client.predict("/tryon", {
           person_img: humanBlob,
           garment_img: dressBlob,
-          seed: 0,
+          seed: 1234,
           randomize_seed: true,
         }),
         new Promise((_, reject) =>
-          setTimeout(() => reject(new Error("Request timed out")), 120000)
+          setTimeout(() => reject(new Error("Request timed out")), 12000000)
         ),
       ]);
 
@@ -131,7 +133,7 @@ export async function POST(request: NextRequest) {
       );
     }
   } catch (error: any) {
-    console.error(error, '>?>>>>>>');
+    console.error(error, ">?>>>>>>");
     return NextResponse.json({ error: error }, { status: 500 });
   }
 }

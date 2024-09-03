@@ -335,7 +335,7 @@ const VirtualWardrobeRoom: React.FC = () => {
                 animate={{ rotate: 360 }}
                 transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
               >
-                <Sparkles className="w-16 h-16 mb-4" />
+                <Sparkles className="w-16 h-16 mb-4 animate-spin" />
               </motion.div>
               <p className="text-xl">Magic in progress...</p>
             </div>
