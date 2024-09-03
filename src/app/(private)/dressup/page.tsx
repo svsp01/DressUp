@@ -91,7 +91,6 @@ const VirtualWardrobeRoom: React.FC = () => {
   };
 
   const blobToBase64 = (blob: Blob): Promise<string> => {
-    
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.readAsDataURL(blob);
@@ -221,38 +220,41 @@ const VirtualWardrobeRoom: React.FC = () => {
       <motion.h1
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-4xl font-bold text-center mb-8 text-gradient"
+        className="text-2xl font-bold text-center mb-8 text-gradient"
       >
         Virtual Wardrobe Room
       </motion.h1>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="col-span-2 bg-gray-900 border-none text-white ">
-          <CardContent className="p-6">
-            <h2 className="text-2xl font-semibold mb-4">Your Wardrobe</h2>
-            <div className="grid grid-cols-3 p-10 scroll gap-4 max-h-96 overflow-y-auto">
-              {wardrobe?.map((dress) => (
-                <motion.div
-                  key={dress.id}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="cursor-move"
-                  draggable
-                  onDragStart={(e: any) => handleDragStart(e, dress)}
-                  onClick={() => handleDressSelect(dress)}
-                >
-                  <img
-                    src={dress.image}
-                    alt={`Dress ${dress.id}`}
-                    className="w-full h-auto rounded-lg shadow-md"
-                  />
-                </motion.div>
-              ))}
+        <Card className="col-span-2 bg-gray-950 border text-white ">
+          <CardContent className="p-6 h-full flex flex-col justify-between">
+            <div>
+              <h2 className="text-md font-semibold mb-4">Your Wardrobe</h2>
+              <div className="grid grid-cols-3 p-10 scroll gap-4 max-h-96 overflow-y-auto">
+                {wardrobe?.map((dress) => (
+                  <motion.div
+                    key={dress.id}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="cursor-move"
+                    draggable
+                    onDragStart={(e: any) => handleDragStart(e, dress)}
+                    onClick={() => handleDressSelect(dress)}
+                  >
+                    <img
+                      src={dress.image}
+                      alt={`Dress ${dress.id}`}
+                      className="w-full h-auto rounded-lg shadow-md"
+                    />
+                  </motion.div>
+                ))}
+              </div>
             </div>
-            <div className="mt-4 flex justify-between">
+
+            <div className="mt-4 flex justify-end">
               <Button
                 onClick={() => dressFileInputRef.current?.click()}
-                className="bg-purple-500 hover:bg-purple-600"
+                className="bg-green-600 hover:bg-green-700"
               >
                 <Upload className="mr-2 h-4 w-4" /> Upload Dress
               </Button>
@@ -263,13 +265,13 @@ const VirtualWardrobeRoom: React.FC = () => {
                 <Camera className="mr-2 h-4 w-4" /> Take Photo
               </Button> */}
             </div>
-            <input
+            {/* <input
               type="file"
               ref={dressFileInputRef}
               onChange={handleDressUpload}
               accept="image/*"
               className="hidden"
-            />
+            /> */}
             {/* <input
               type="file"
               ref={cameraInputRef}
@@ -281,9 +283,9 @@ const VirtualWardrobeRoom: React.FC = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-gray-900 border-none text-white">
+        <Card className="bg-gray-950 border text-white">
           <CardContent className="p-6">
-            <h2 className="text-2xl font-semibold mb-4">Try It On</h2>
+            <h2 className="text-md font-semibold mb-4">Try It On</h2>
             <div
               className="h-96 bg-gray-950 rounded-lg flex items-center justify-center overflow-hidden relative"
               onDragOver={handleDragOver}
@@ -298,7 +300,8 @@ const VirtualWardrobeRoom: React.FC = () => {
                   />
                   <Button
                     onClick={() => fileInputRef.current?.click()}
-                    className="absolute top-2 right-2 bg-red-500 hover:bg-red-600"
+                    className="absolute bg-transparent top-2 right-2 "
+                    variant="outline"
                   >
                     <RefreshCw className="h-4 w-4" />
                   </Button>

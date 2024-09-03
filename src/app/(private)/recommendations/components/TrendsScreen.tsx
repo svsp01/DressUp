@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
 import trendServices from "@/services/trendServices";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import closetServices from "@/services/closetServices";
 
 interface Trend {
   id: number;
@@ -130,6 +131,7 @@ const TrendsScreen: React.FC = () => {
         });
       }
     } else if (selectedAction === "addToCloset") {
+      await closetServices.AddCloset(selectedTrend);
       toast({
         title: "Added to Closet",
         description: "The trend has been successfully added to your closet.",
@@ -141,7 +143,9 @@ const TrendsScreen: React.FC = () => {
 
   return (
     <div className="p-2 relative">
-      <div className="text-2xl mb-4 text-white font-semibold">Trends in world</div>
+      <div className="text-2xl mb-4 text-white font-semibold">
+        Trends in world
+      </div>
       <div className="columns-2 md:columns-3 lg:columns-4 gap-2">
         <AnimatePresence>
           {trends?.map((trend) => (
@@ -161,17 +165,11 @@ const TrendsScreen: React.FC = () => {
               />
               <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 hover:opacity-100 flex flex-col justify-end items-center transition-opacity duration-300 p-2">
                 <p className="text-white text-lg mb-2">{trend.title}</p>
-                <div className="flex space-x-2">
+                <div className="flex justify-around w-full space-x-2">
                   <Button
                     size="sm"
-                    onClick={() => handleActionClick("addToCloset", trend)}
-                  >
-                    <Plus className="w-4 h-4 mr-1" />
-                    Add
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="destructive"
+                    variant="default"
+                    className="bg-gray-950 text-red-500"
                     onClick={() => handleActionClick("delete", trend)}
                   >
                     <Trash2 className="w-4 h-4" />
@@ -182,12 +180,20 @@ const TrendsScreen: React.FC = () => {
                     onClick={() => handleActionClick("report", trend)}
                   >
                     <Flag className="w-4 h-4 mr-1" />
-                    Report
+                    report
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="default"
+                    className="bg-gray-950"
+                    onClick={() => handleActionClick("addToCloset", trend)}
+                  >
+                    <Plus className="w-4 h-4 " />
                   </Button>
                 </div>
               </div>
               <Button
-                className="absolute bg-gray-600 text-white hover:bg-gray-800 hover:text-white top-2 right-2"
+                className="absolute bg-gray-950 text-white hover:bg-gray-800 hover:text-white top-2 right-2"
                 size="sm"
                 variant="outline"
                 onClick={() => {

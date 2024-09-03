@@ -1,5 +1,5 @@
 import React from "react";
-import { ArrowDown,  MessagesSquare } from "lucide-react";
+import {   MessagesSquare } from "lucide-react";
 
 function WelcomeChatComponent() {
   return (
@@ -18,7 +18,6 @@ function WelcomeChatComponent() {
           outfits, get fashion tips, or manage your clothing items. Type your
           questions or commands below to get started.
         </p>
-        <ArrowDown className="text-gray-500 text-4xl animate-bounce" />
       </div>
     </div>
   );
