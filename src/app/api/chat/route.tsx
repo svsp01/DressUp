@@ -2,13 +2,55 @@ import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/DataBase/dbConnect";
 import { verifyToken } from "@/middle/verifyToken";
 import { Client } from "@gradio/client";
+import mongoose from "mongoose";
+import AIGenerationsModel from "@/models/AIGenerationsModel";
+import { ObjectId } from "mongodb";
+import { v2 as cloudinary } from "cloudinary";
 
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+const uploadToCloudinary = async (url: string): Promise<string> => {
+  try {
+    const result = await cloudinary.uploader.upload(url, {
+      folder: "ai_generations",
+    });
+    return result.secure_url;
+  } catch (error) {
+    console.error("Error uploading to Cloudinary:", error);
+    throw new Error("Failed to upload image to Cloudinary");
+  }
+};
 function base64ToBlob(base64: string): Buffer {
   const matches = base64.match(/^data:([A-Za-z-+/]+);base64,(.+)$/);
   if (!matches || matches.length !== 3) {
     throw new Error("Invalid base64 string");
   }
   return Buffer.from(matches[2], "base64");
+}
+
+async function saveAIGeneration(
+  user: mongoose.Types.ObjectId,
+  aiType: string,
+  prompt: string,
+  aiResponse: any,
+  additionalData: any = {}
+) {
+  try {
+    const newAIGeneration = new AIGenerationsModel({
+      user,
+      aiType,
+      prompt,
+      aiResponse,
+      additionalData,
+    });
+    await newAIGeneration.save();
+  } catch (error) {
+    console.error("Error saving AI generation:", error);
+  }
 }
 
 export async function POST(request: NextRequest) {
@@ -28,19 +70,43 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    let aiResponse;
+    let aiResponse: any;
 
     switch (Aitype) {
       case "texttotext":
         aiResponse = await handleTextToText(message);
+        await saveAIGeneration(
+          new ObjectId(userId),
+          "texttotext",
+          message,
+          aiResponse
+        );
         break;
 
       case "texttoimage":
         aiResponse = await handleTextToImage(message);
+        const cloudinaryUrl = await uploadToCloudinary(aiResponse.data[0].url);
+        await saveAIGeneration(
+          new ObjectId(userId),
+          "texttoimage",
+          message,
+          aiResponse,
+          {
+            imageUrl: cloudinaryUrl,
+          }
+        );
+
         break;
 
       case "imageclassification":
         aiResponse = await handleImageClassification(message, body);
+        await saveAIGeneration(
+          new ObjectId(userId),
+          "imageclassification",
+          message,
+          aiResponse
+        );
+
         break;
 
       default:

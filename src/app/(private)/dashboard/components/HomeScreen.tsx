@@ -39,16 +39,11 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-
-const generateDummyData = (count: number, type: "dressUp" | "trend") =>
-  Array.from({ length: count }, (_, i) => ({
-    id: i + 1,
-    title: `${type === "dressUp" ? "Dress-Up" : "Trend"} ${i + 1}`,
-    imgUrl: `https://picsum.photos/${300 + i}/${400 + i}`,
-  }));
+import aiServices from "@/services/aiServices";
+import Image from "next/image";
 
 const HomeScreen: React.FC = () => {
-  const [dressUps] = useState(generateDummyData(5, "dressUp"));
+  const [aiGenerations, setAiGenerations] = useState<any[]>([]);
   const [trends, setTrends] = useState<any>([]);
   const [mostUsed, setMostUsed] = useState([]);
   const [notifications, setNotifications] = useState([]);
@@ -58,6 +53,20 @@ const HomeScreen: React.FC = () => {
   const [downloadModalOpen, setDownloadModalOpen] = useState(false);
   const router = useRouter();
   const currentSeason = "Autumn";
+
+  const fetchAiGenerations = async () => {
+    try {
+      const data = await aiServices.GetAiGenerations();
+      console.log(data.aiGenerations[0]?.aiResponse?.data[0]?.url, ">>>");
+      setAiGenerations(data.aiGenerations);
+    } catch (error: any) {
+      console.error("Error fetching trends:", error);
+
+      // setError(error.message);
+    } finally {
+      // setLoading(false);
+    }
+  };
 
   const fetchTrends = async () => {
     try {
@@ -85,6 +94,7 @@ const HomeScreen: React.FC = () => {
   const handleDownload = () => {};
 
   useEffect(() => {
+    fetchAiGenerations();
     fetchAllCloset();
     fetchTrends();
   }, []);
@@ -121,7 +131,6 @@ const HomeScreen: React.FC = () => {
               )}
             </DropdownMenuContent>
           </DropdownMenu>
-          // AI Queries Dropdown
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button size="icon" variant="outline">
@@ -178,25 +187,29 @@ const HomeScreen: React.FC = () => {
 
       {/* Recent Dress-Ups */}
       <section className="space-y-2">
-        <h2 className="text-xl font-semibold">Your Recent Dress-Ups</h2>
+        <h2 className="text-xl font-semibold">Your Recent Ai Generations</h2>
         <Carousel className="w-full">
           <CarouselContent>
-            {dressUps.map((dressUp) => (
+            {aiGenerations.map((dressUp: any) => (
               <CarouselItem
-                key={dressUp.id}
+                key={dressUp._id}
                 className="md:basis-1/2 lg:basis-1/3"
               >
                 <Card className="bg-gray-800 border-gray-700">
                   <CardContent className="p-0">
                     <img
-                      src={dressUp.imgUrl}
-                      alt={dressUp.title}
+                      
+                      src={dressUp?.additionalData?.imageUrl}
+                      // src="https://multimodalart-flux-1-merged.hf.space/file=/tmp/gradio/8a5368dd1722261be88d26d059226f84d95188e7/image.webp"
+                      alt={dressUp?.prompt}
                       className="rounded-t-lg w-full h-[200px] object-cover cursor-pointer"
-                      onClick={() => handleImageClick(dressUp.imgUrl)}
+                      onClick={() =>
+                        handleImageClick(dressUp?.aiResponse?.data[0]?.url)
+                      }
                     />
                   </CardContent>
                   <CardFooter className="p-2 flex text-white justify-between items-center">
-                    <span>{dressUp.title}</span>
+                    <span>{dressUp?.prompt}</span>
                     <div className="flex gap-2">
                       <Button
                         size="sm"
@@ -243,7 +256,12 @@ const HomeScreen: React.FC = () => {
               />
               <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 p-2 flex justify-between items-center">
                 <span className="max-w-15 truncate">{trend?.title}</span>
-                <Button disabled size="sm" className="flex gap-2" variant="secondary">
+                <Button
+                  disabled
+                  size="sm"
+                  className="flex gap-2"
+                  variant="secondary"
+                >
                   Add To Closet
                   <PlusCircle className="w-4 h-4" />
                 </Button>
