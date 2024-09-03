@@ -155,7 +155,7 @@ const TrendsScreen: React.FC = () => {
               layout
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.8 }}
+              // exit={{ opacity: 0, scale: 0.8 }}
               transition={{ duration: 0.5 }}
             >
               <img
