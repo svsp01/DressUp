@@ -177,12 +177,12 @@ const ProfileScreen = ({ userDetail, subscriptionDetail }: any) => {
             >
               <Card className="bg-gray-800">
                 <CardHeader>
-                  <CardTitle>Subscription Details</CardTitle>
+                  <CardTitle className="text-white">Subscription Details</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
                     <p className="text-sm text-gray-400">Current Plan</p>
-                    <p className="text-xl font-bold">
+                    <p className="text-xl font-bold text-green-500">
                       {subscriptionDetail?.plan.charAt(0).toUpperCase() +
                         subscriptionDetail?.plan.slice(1)}
                     </p>
@@ -191,7 +191,7 @@ const ProfileScreen = ({ userDetail, subscriptionDetail }: any) => {
                     <p className="text-sm text-gray-400">
                       Subscription Start Date
                     </p>
-                    <p>
+                    <p className="text-white">
                       {new Date(
                         subscriptionDetail?.createdAt
                       ).toLocaleDateString()}
@@ -199,7 +199,7 @@ const ProfileScreen = ({ userDetail, subscriptionDetail }: any) => {
                   </div>
                   <div>
                     <p className="text-sm text-gray-400">Last Updated</p>
-                    <p>
+                    <p className="text-white">
                       {new Date(
                         subscriptionDetail?.updatedAt
                       ).toLocaleDateString()}
@@ -223,7 +223,7 @@ const ProfileScreen = ({ userDetail, subscriptionDetail }: any) => {
             >
               <Card className="bg-gray-800">
                 <CardHeader>
-                  <CardTitle>Recent Notifications</CardTitle>
+                  <CardTitle className="text-gray-100">Recent Notifications</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {[
@@ -243,10 +243,10 @@ const ProfileScreen = ({ userDetail, subscriptionDetail }: any) => {
                         "Your subscription details were updated recently.",
                     },
                   ].map((notification) => (
-                    <Alert key={notification.id} className="bg-gray-700">
-                      <Bell className="h-4 w-4" />
-                      <AlertTitle>{notification.title}</AlertTitle>
-                      <AlertDescription>
+                    <Alert key={notification.id} className="bg-gray-700 text-gray-100">
+                      <Bell color="white" className="h-4 w-4 " />
+                      <AlertTitle className="">{notification.title}</AlertTitle>
+                      <AlertDescription className="text-gray-400">
                         {notification.description}
                       </AlertDescription>
                     </Alert>
@@ -264,7 +264,7 @@ const ProfileScreen = ({ userDetail, subscriptionDetail }: any) => {
         >
           <Card className="mt-8 bg-gray-800">
             <CardHeader>
-              <CardTitle>Account Activity</CardTitle>
+              <CardTitle className="text-white">Account Activity</CardTitle>
               <CardDescription>
                 Recent login and account updates
               </CardDescription>
@@ -273,17 +273,17 @@ const ProfileScreen = ({ userDetail, subscriptionDetail }: any) => {
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
                   <div>
-                    <p className="font-medium">Last Login</p>
+                    <p className="font-medium text-white">Last Login</p>
                     <p className="text-sm text-gray-400">
                       {new Date(userDetail?.lastLogin).toLocaleString()}
                     </p>
                   </div>
-                  <Button variant="ghost" size="sm">
-                    <LogOut className="mr-2" /> Sign Out
+                  <Button variant="ghost" className="text-red-400" size="sm">
+                    <LogOut className="mr-2 " /> Log Out
                   </Button>
                 </div>
                 <div>
-                  <p className="font-medium">Account Created</p>
+                  <p className="font-medium text-white">Account Created</p>
                   <p className="text-sm text-gray-400">
                     {new Date(userDetail?.createdAt).toLocaleDateString()}
                   </p>
