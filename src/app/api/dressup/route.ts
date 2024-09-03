@@ -107,7 +107,7 @@ export async function POST(request: NextRequest) {
         client.predict("/tryon", {
           person_img: humanBlob,
           garment_img: dressBlob,
-          seed: 1234,
+          seed: 0,
           randomize_seed: true,
         }),
         new Promise((_, reject) =>
