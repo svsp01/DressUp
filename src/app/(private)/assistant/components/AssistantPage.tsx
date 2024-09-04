@@ -10,22 +10,14 @@ import {
   MessageSquare,
   SendHorizontalIcon,
   HelpCircle,
+  Loader2,
 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { AnimatePresence, motion } from "framer-motion";
 import chatServices from "@/services/chatServices";
 import WelcomeChatComponent from "./WelcomeChatComponent";
-const blobToBase64 = (blob: Blob): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(blob);
-    reader.onloadend = () => {
-      resolve(reader.result as string);
-    };
-    reader.onerror = reject;
-  });
-};
+
 const AssistantPage = () => {
   const [activeTab, setActiveTab] = useState("text-to-text");
   const [input, setInput] = useState("");
@@ -34,6 +26,9 @@ const AssistantPage = () => {
   const [responseImage, setResponseImage] = useState<any>(null);
   const [analysedRespose, setAnalysedRespose] = useState<any>("");
 
+  const [isLoading, setIsLoading] = useState(false);
+  const [isImageGenerating, setIsImageGenerating] = useState(false);
+
   const fileInputRef = useRef<any>(null);
 
   const handleSubmit = async () => {
@@ -41,6 +36,8 @@ const AssistantPage = () => {
 
     const newMessage = { type: "user", content: input };
     setChatHistory((prev: any) => [...prev, newMessage]);
+
+    setIsLoading(true);
 
     try {
       let payload = { message: input, Aitype: "", body: {} };
@@ -51,6 +48,7 @@ const AssistantPage = () => {
           break;
         case "text-to-image":
           payload.Aitype = "texttoimage";
+          setIsImageGenerating(true);
           break;
         case "image-text-to-text":
           payload.Aitype = "imageclassification";
@@ -62,10 +60,11 @@ const AssistantPage = () => {
 
       const aiResponse = await chatServices.Chat(payload);
       const aiMessage = { type: "ai", content: aiResponse.result.data };
-      if ((payload.Aitype = "texttoimage")) {
+      if (payload.Aitype === "texttoimage") {
         setResponseImage(aiResponse?.result?.data[0]?.url);
+        setIsImageGenerating(false);
       }
-      if ((payload.Aitype = "imageclassification")) {
+      if (payload.Aitype === "imageclassification") {
         setAnalysedRespose(aiResponse?.result?.data[0]);
       }
 
@@ -76,9 +75,12 @@ const AssistantPage = () => {
         type: "ai",
         content: error.message || "Failed to get AI response",
       };
+
       setChatHistory((prev: any) => [...prev, errorMessage]);
     } finally {
+      setIsImageGenerating(false);
       setInput("");
+      setIsLoading(false);
     }
   };
 
@@ -200,8 +202,12 @@ const AssistantPage = () => {
                   onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
                   className="flex-grow mr-2 bg-gray-950"
                 />
-                <Button onClick={handleSubmit}>
-                  <SendHorizontalIcon />
+                <Button onClick={handleSubmit} disabled={isLoading}>
+                  {isLoading ? (
+                    <Loader2 className="animate-spin" />
+                  ) : (
+                    <SendHorizontalIcon />
+                  )}
                 </Button>
               </div>
             </motion.div>
@@ -223,9 +229,32 @@ const AssistantPage = () => {
                 onChange={(e) => setInput(e.target.value)}
                 className="mb-4 bg-gray-950"
               />
-              <Button onClick={handleSubmit}>Generate Image</Button>
-              {responseImage && (
-                <img src={responseImage} className="w-[300px] pt-10" />
+              <Button onClick={handleSubmit} disabled={isLoading}>
+                {isLoading ? (
+                  <Loader2 className="animate-spin" />
+                ) : (
+                  "Generate Image"
+                )}
+              </Button>
+              {isImageGenerating ? (
+                // <div className="w-[300px] pt-10">
+                //   <Loader2 className="animate-spin text-white w-16 h-16 mx-auto" />
+                // </div>
+                <div className="flex justify-center items-center pt-10">
+                  <div className="w-[300px] h-[300px] relative animate-pulse">
+                    <div className="absolute inset-0 bg-gradient-to-r from-green-400 via-blue-500 to-teal-500 rounded-lg shadow-lg transform-gpu rotate-y-180 perspective">
+                      <div className="absolute inset-0 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 rounded-lg opacity-75 shadow-lg"></div>
+                      <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 via-teal-500 to-green-500 rounded-lg opacity-50 shadow-lg"></div>
+                      <div className="absolute inset-0 bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 rounded-lg opacity-50 shadow-lg"></div>
+                      <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 rounded-lg opacity-25 shadow-lg"></div>
+                      <div className="absolute inset-0 bg-gradient-to-r from-green-500 via-yellow-500 to-orange-500 rounded-lg opacity-25 shadow-lg"></div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                responseImage && (
+                  <img src={responseImage} className="w-[300px] pt-10" />
+                )
               )}
             </motion.div>
           )}
@@ -241,8 +270,15 @@ const AssistantPage = () => {
               className="flex-grow flex flex-col p-4"
             >
               <div className="mb-4">
-                <Button onClick={() => fileInputRef.current.click()}>
-                  Upload Image
+                <Button
+                  onClick={() => fileInputRef.current.click()}
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <Loader2 className="animate-spin" />
+                  ) : (
+                    "Upload Image"
+                  )}
                 </Button>
                 <input
                   type="file"
@@ -278,7 +314,9 @@ const AssistantPage = () => {
                 onChange={(e) => setInput(e.target.value)}
                 className="mb-4 bg-gray-950"
               />
-              <Button onClick={handleSubmit}>Analyze</Button>
+              <Button onClick={handleSubmit} disabled={isLoading}>
+                {isLoading ? <Loader2 className="animate-spin" /> : "Analyze"}
+              </Button>
             </motion.div>
           )}
         </AnimatePresence>

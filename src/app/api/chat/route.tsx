@@ -7,12 +7,25 @@ import AIGenerationsModel from "@/models/AIGenerationsModel";
 import { ObjectId } from "mongodb";
 import { v2 as cloudinary } from "cloudinary";
 
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
+// import cloudinary from 'cloudinary';
+// import mongoose from 'mongoose';
+// import { NextRequest, NextResponse } from 'next/server';
+// import { AIGenerationsModel } from './models/AIGenerations';
+// import { dbConnect, verifyToken } from './utils';
 
+// Cloudinary configuration with error handling
+try {
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  });
+} catch (error) {
+  console.error("Error configuring Cloudinary:", error);
+  throw new Error("Cloudinary configuration failed");
+}
+
+// Function to upload image to Cloudinary with enhanced error handling
 const uploadToCloudinary = async (url: string): Promise<string> => {
   try {
     const result = await cloudinary.uploader.upload(url, {
@@ -24,14 +37,22 @@ const uploadToCloudinary = async (url: string): Promise<string> => {
     throw new Error("Failed to upload image to Cloudinary");
   }
 };
+
+// Function to convert base64 to Blob with enhanced error handling
 function base64ToBlob(base64: string): Buffer {
-  const matches = base64.match(/^data:([A-Za-z-+/]+);base64,(.+)$/);
-  if (!matches || matches.length !== 3) {
-    throw new Error("Invalid base64 string");
+  try {
+    const matches = base64.match(/^data:([A-Za-z-+/]+);base64,(.+)$/);
+    if (!matches || matches.length !== 3) {
+      throw new Error("Invalid base64 string");
+    }
+    return Buffer.from(matches[2], "base64");
+  } catch (error) {
+    console.error("Error converting base64 to Blob:", error);
+    throw new Error("Failed to convert base64 string to Blob");
   }
-  return Buffer.from(matches[2], "base64");
 }
 
+// Function to save AI generation data with enhanced error handling
 async function saveAIGeneration(
   user: mongoose.Types.ObjectId,
   aiType: string,
@@ -50,9 +71,11 @@ async function saveAIGeneration(
     await newAIGeneration.save();
   } catch (error) {
     console.error("Error saving AI generation:", error);
+    throw new Error("Failed to save AI generation");
   }
 }
 
+// POST request handler with enhanced error handling
 export async function POST(request: NextRequest) {
   try {
     await dbConnect();
@@ -71,12 +94,13 @@ export async function POST(request: NextRequest) {
     }
 
     let aiResponse: any;
+    let responseImageUrl: string | undefined;
 
     switch (Aitype) {
       case "texttotext":
         aiResponse = await handleTextToText(message);
         await saveAIGeneration(
-          new ObjectId(userId),
+          new mongoose.Types.ObjectId(userId),
           "texttotext",
           message,
           aiResponse
@@ -85,28 +109,41 @@ export async function POST(request: NextRequest) {
 
       case "texttoimage":
         aiResponse = await handleTextToImage(message);
-        const cloudinaryUrl = await uploadToCloudinary(aiResponse.data[0].url);
-        await saveAIGeneration(
-          new ObjectId(userId),
-          "texttoimage",
-          message,
-          aiResponse,
-          {
-            imageUrl: cloudinaryUrl,
-          }
-        );
 
+        try {
+          const cloudinaryUrl = await uploadToCloudinary(
+            aiResponse.data[0].url
+          );
+          await saveAIGeneration(
+            new mongoose.Types.ObjectId(userId),
+            "texttoimage",
+            message,
+            aiResponse,
+            { imageUrl: cloudinaryUrl }
+          );
+        } catch (error) {
+          console.warn(
+            "Using AI response URL due to Cloudinary upload error:",
+            error
+          );
+          await saveAIGeneration(
+            new mongoose.Types.ObjectId(userId),
+            "texttoimage",
+            message,
+            aiResponse,
+            { imageUrl: aiResponse.data[0].url }
+          );
+        }
         break;
 
       case "imageclassification":
         aiResponse = await handleImageClassification(message, body);
         await saveAIGeneration(
-          new ObjectId(userId),
+          new mongoose.Types.ObjectId(userId),
           "imageclassification",
           message,
           aiResponse
         );
-
         break;
 
       default:
@@ -142,58 +179,75 @@ export async function POST(request: NextRequest) {
   }
 }
 
+// Function to handle text-to-text AI requests with enhanced error handling
 async function handleTextToText(prompt: string) {
-  const client = await Client.connect("srikanthkaraka/chatbot-lama3.1");
+  try {
+    const client = await Client.connect("srikanthkaraka/chatbot-lama3.1");
 
-  const aiResponse = await client.predict("/chat", {
-    user_input: JSON.stringify({
-      instruction: "Generate a detailed and insightful response",
-      prompt: prompt,
-      context: {
-        language: "en",
-        tone: "professional",
-        detail_level: "high",
-      },
-    }),
-  });
+    const aiResponse = await client.predict("/chat", {
+      user_input: JSON.stringify({
+        instruction: "Generate a detailed and insightful response",
+        prompt: prompt,
+        context: {
+          language: "en",
+          tone: "professional",
+          detail_level: "high",
+        },
+      }),
+    });
 
-  return aiResponse;
+    return aiResponse;
+  } catch (error) {
+    console.error("Error in handleTextToText:", error);
+    throw new Error("Failed to process text-to-text AI request");
+  }
 }
 
+// Function to handle text-to-image AI requests with enhanced error handling
 async function handleTextToImage(prompt: string) {
-  const client = await Client.connect("multimodalart/FLUX.1-merged");
+  try {
+    const client = await Client.connect("multimodalart/FLUX.1-merged");
 
-  const aiResponse = await client.predict("/infer", {
-    prompt: `${prompt}`,
-    seed: 42,
-    randomize_seed: true,
-    width: 1024,
-    height: 1024,
-    guidance_scale: 3.5,
-    num_inference_steps: 8,
-  });
+    const aiResponse = await client.predict("/infer", {
+      prompt: `${prompt}`,
+      seed: 42,
+      randomize_seed: true,
+      width: 1024,
+      height: 1024,
+      guidance_scale: 3.5,
+      num_inference_steps: 8,
+    });
 
-  return aiResponse;
+    return aiResponse;
+  } catch (error) {
+    console.error("Error in handleTextToImage:", error);
+    throw new Error("Failed to process text-to-image AI request");
+  }
 }
 
+// Function to handle image classification AI requests with enhanced error handling
 async function handleImageClassification(prompt: any, body: any) {
-  const { dressImage } = body;
+  try {
+    const { dressImage } = body;
+    const dressBlob = base64ToBlob(dressImage);
 
-  const dressBlob = base64ToBlob(dressImage);
+    const client = await Client.connect("maxiw/Phi-3.5-vision");
 
-  const client = await Client.connect("maxiw/Phi-3.5-vision");
+    const aiResponse = await client.predict("/run_example", {
+      image: dressBlob,
+      text_input: JSON.stringify({
+        instruction: `Classify the image and provide detailed attributes with user input ${prompt}`,
+        context: "Fashion analysis",
+        details: {
+          output_format: "detailed",
+        },
+      }),
+      model_id: "microsoft/Phi-3.5-vision-instruct",
+    });
 
-  const aiResponse = await client.predict("/run_example", {
-    image: dressBlob,
-    text_input: JSON.stringify({
-      instruction: `Classify the image and provide detailed attributes with user inoput ${prompt}`,
-      context: "Fashion analysis",
-      details: {
-        output_format: "detailed",
-      },
-    }),
-    model_id: "microsoft/Phi-3.5-vision-instruct",
-  });
-
-  return aiResponse;
+    return aiResponse;
+  } catch (error) {
+    console.error("Error in handleImageClassification:", error);
+    throw new Error("Failed to process image classification AI request");
+  }
 }
